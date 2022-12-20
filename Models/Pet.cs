@@ -9,5 +9,7 @@ namespace TamagotchiAPI
         public DateTime Birthday { get; set; }
         public int HungerLevel { get; set; }
         public int HappinessLevel { get; set; }
+
+
     }
 }
