@@ -89,6 +89,7 @@ namespace TamagotchiAPI.Controllers
             try
             {
                 // Try to save these changes.
+                // pet.LastInteractedWithDate = DateTime.Today;
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -133,6 +134,56 @@ namespace TamagotchiAPI.Controllers
             // headers with details of the newly created object.
             return CreatedAtAction("GetPet", new { id = pet.Id }, pet);
         }
+
+        // Adding Players to a game night
+        // POST /api/GameNights/5/Players
+        [HttpPost("{id}/Playtimes")]
+        public async Task<ActionResult<Playtime>> CreatePlaytimeForPet(int id, Playtime playtime)
+        {
+            var pet = await _context.Pets.FindAsync(id);
+            pet.HungerLevel += 3;
+            pet.HappinessLevel += 5;
+            _context.Playtimes.Add(playtime);
+            // pet.LastInteractedWithDate = DateTime.Today;
+            await _context.SaveChangesAsync();
+
+            // Return a response that indicates the object was created (status code `201`) and some additional
+            // headers with details of the newly created object.
+            return CreatedAtAction("GetPet", new { id = id }, pet);
+        }
+
+        [HttpPost("{id}/Feedings")]
+        public async Task<ActionResult<Feeding>> CreateFeedingForPet(int id, Feeding feeding)
+        {
+
+            var pet = await _context.Pets.FindAsync(id);
+            pet.HungerLevel -= 3;
+            pet.HappinessLevel += 3;
+            _context.Feedings.Add(feeding);
+            // pet.LastInteractedWithDate = DateTime.Today;
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetPet", new { id = id }, pet);
+
+        }
+
+        [HttpPost("{id}/Scoldings")]
+        public async Task<ActionResult<Scolding>> CreateScoldingForPet(int id, Scolding scolding)
+        {
+            var pet = await _context.Pets.FindAsync(id);
+            pet.HappinessLevel -= 5;
+            _context.Scoldings.Add(scolding);
+            // pet.LastInteractedWithDate = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            // Return a response that indicates the object was created (status code `201`) and some additional
+            // headers with details of the newly created object.
+            return CreatedAtAction("GetPet", new { id = id }, pet);
+        }
+        //                                       |       |
+        //                                       |       Player deserialized from JSON from the body
+        //                                       |
+        //                                       GameNight ID comes from the URL
 
         // DELETE: api/Pets/5
         //
